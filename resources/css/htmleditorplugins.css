@@ -62,11 +62,11 @@
 	cursor: pointer;
 }
 
-.char-item.x-view-selected {
-	background-color: #777;
+.char-item.x-item-selected {
+    background-color: #777;
 }
 
 .char-over {
-	border: 1px solid #15428B;
-	background-color:#d0def0;
+    border: 1px solid #15428B;
+    background-color:#d0def0;
 }
