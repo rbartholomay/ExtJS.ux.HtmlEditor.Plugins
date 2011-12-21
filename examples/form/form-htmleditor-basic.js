@@ -6,7 +6,7 @@ Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-    new Ext.FormPanel({
+    new Ext.form.Panel({
         title       : 'HtmlEditor Plugins Form',
         renderTo    : 'test',
         width       : 950,
