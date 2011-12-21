@@ -5,6 +5,8 @@
  * <p>A base plugin for extending to create standard Midas command buttons.</p>
  * http://msdn.microsoft.com/en-us/library/ms533049%28v=VS.85%29.aspx
  * http://www.mozilla.org/editor/midas-spec.html
+ *
+ * ExtJS4 adaptation by René Bartholomay <rene.bartholomay@gmx.de>
  */
 Ext.ns('Ext.ux.form.HtmlEditor');
 
@@ -14,7 +16,7 @@ if (!Ext.isObject) {
     };
 }
 
-Ext.override(Ext.form.HtmlEditor, {
+Ext.override(Ext.form.field.HtmlEditor, {
     getSelectedText: function(clip){
         var doc = this.getDoc(), selDocFrag;
         var txt = '', hasHTML = false, selNodes = [], ret, html = '';
@@ -64,12 +66,13 @@ Ext.override(Ext.form.HtmlEditor, {
                 textContent: ''
             };
         }
-        
+
         return ret;
     }
 });
 
-Ext.ux.form.HtmlEditor.MidasCommand = Ext.extend(Ext.util.Observable, {
+Ext.define('Ext.ux.form.HtmlEditor.MidasCommand', {
+    extend: 'Ext.util.Observable',
     // private
     init: function(cmp){
         this.cmp = cmp;
@@ -111,9 +114,9 @@ Ext.ux.form.HtmlEditor.MidasCommand = Ext.extend(Ext.util.Observable, {
                     overflowText: b.overflowText || b.title
                 };
             } else {
-                midasCmdButton = new Ext.Toolbar.Separator();
+                midasCmdButton = Ext.create('Ext.toolbar.Separator');
             }
-            btn = tb.addButton(midasCmdButton);
+            btn = tb.add(midasCmdButton);
             if (b.enableOnSelection) {
                 btn.disable();
             }

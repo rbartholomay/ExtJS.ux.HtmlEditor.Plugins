@@ -3,33 +3,42 @@
  * @class Ext.ux.form.HtmlEditor.SpecialCharacters
  * @extends Ext.util.Observable
  * <p>A plugin that creates a button on the HtmlEditor for inserting special characters.</p>
+ *
+ * ExtJS4 adaptation by René Bartholomay <rene.bartholomay@gmx.de>
  */
-Ext.ux.form.HtmlEditor.SpecialCharacters = Ext.extend(Ext.util.Observable, {
+Ext.define('Ext.ux.form.HtmlEditor.SpecialCharacters', {
+    extend: 'Ext.util.Observable',
+
     // SpecialCharacters language text
     langTitle   : 'Insert Special Character',
     langInsert  : 'Insert',
     langCancel  : 'Cancel',
+
     /**
      * @cfg {Array} specialChars
      * An array of additional characters to display for user selection.  Uses numeric portion of the ASCII HTML Character Code only. For example, to use the Copyright symbol, which is &#169; we would just specify <tt>169</tt> (ie: <tt>specialChars:[169]</tt>).
      */
     specialChars: [153],
+
     /**
      * @cfg {Array} charRange
      * Two numbers specifying a range of ASCII HTML Characters to display for user selection. Defaults to <tt>[160, 256]</tt>.
      */
-    charRange: [160, 256],
+    charRange   : [160, 256],
+
     // private
     chars: [],
+
     // private
     init: function(cmp){
         this.cmp = cmp;
         this.cmp.on('render', this.onRender, this);
     },
+
     // private
     onRender: function(){
         var cmp = this.cmp;
-        var btn = this.cmp.getToolbar().addButton({
+        var btn = this.cmp.getToolbar().add({
             iconCls: 'x-edit-char',
             handler: function(){
                 if (!this.chars.length) {
@@ -42,27 +51,29 @@ Ext.ux.form.HtmlEditor.SpecialCharacters = Ext.extend(Ext.util.Observable, {
                         this.chars.push(['&#' + i + ';']);
                     }
                 }
-                var charStore = new Ext.data.ArrayStore({
-                    fields: ['char'],
-                    data: this.chars
+                var charStore = Ext.create('Ext.data.ArrayStore',{
+                    fields  : ['char'],
+                    data    : this.chars
                 });
-                this.charWindow = new Ext.Window({
-                    title: this.langTitle,
-                    width: 436,
-                    autoHeight: true,
-                    layout: 'fit',
-                    items: [{
-                        xtype: 'dataview',
-                        store: charStore,
-                        ref: 'charView',
-                        autoHeight: true,
-                        multiSelect: true,
-                        tpl: new Ext.XTemplate('<tpl for="."><div class="char-item">{char}</div></tpl><div class="x-clear"></div>'),
-                        overClass: 'char-over',
+                this.charWindow = Ext.create('Ext.window.Window',{
+                    title       : this.langTitle,
+                    width       : 436,
+                    height      : 245,
+                    layout      : 'fit',
+                    plain       : true,
+                    items       : [{
+                        xtype       : 'dataview',
+                        store       : charStore,
+                        itemId      : 'charView',
+                        autoHeight  : true,
+                        multiSelect : true,
+                        tpl         : new Ext.XTemplate('<tpl for="."><div class="char-item">{char}</div></tpl><div class="x-clear"></div>'),
+                        overItemCls : 'char-over',
                         itemSelector: 'div.char-item',
+                        trackOver   : true,
                         listeners: {
-                            dblclick: function(t, i, n, e){
-                                this.insertChar(t.getStore().getAt(i).get('char'));
+                            itemdblclick: function(view, record, item, index, e, ePpts){
+                                this.insertChar(record.get('char'));
                                 this.charWindow.close();
                             },
                             scope: this
@@ -71,9 +82,10 @@ Ext.ux.form.HtmlEditor.SpecialCharacters = Ext.extend(Ext.util.Observable, {
                     buttons: [{
                         text: this.langInsert,
                         handler: function(){
-                            Ext.each(this.charWindow.charView.getSelectedRecords(), function(rec){
-                                var c = rec.get('char');
-                                this.insertChar(c);
+                            var dv = this.charWindow.down('#charView');
+                            Ext.each(dv.getSelectedNodes(), function(node){
+                                var c = dv.getRecord(node).get('char');
+                                  this.insertChar(c);
                             }, this);
                             this.charWindow.close();
                         },
