@@ -1,4 +1,11 @@
-== Ext.ux.form.HtmlEditor
+== Ext.ux.form.HtmlEditor  (ExtJS 4.x)
+
+!!! This set of plugins are for ExtJS 4.x !!!
+
+Cause i needed this for an ExtJS4-based application i adapt this...
+
+
+
 
 This is a set of plugins for the ExtJS HtmlEditor that add more advanced HTML editing capabilities. Learn more about these plugins on my blog post about them.
 
